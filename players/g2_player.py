@@ -79,8 +79,6 @@ class Player:
     def getDrone(self, maze_state):
 
         drone = {} # drone view around the current x, y, at radius r
-        # create the final dictionary with all doors within the radius with LCMs. 
-        # TODO: make this more efficient
         for door in maze_state:
             if (door[0], door[1]) not in drone:
                 drone[(door[0], door[1])] = {constants.LEFT: -1, constants.UP: -1, constants.RIGHT: -1, constants.DOWN: -1}
