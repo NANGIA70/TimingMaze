@@ -82,89 +82,99 @@ class Player:
         for door in maze_state:
             if (door[0], door[1]) not in drone:
                 drone[(door[0], door[1])] = {constants.LEFT: -1, constants.UP: -1, constants.RIGHT: -1, constants.DOWN: -1}
-        for (x, y) in drone: 
+        for (x, y) in drone: # these x, y are centered around 
+            print ("x, y:", x, y)
+            if (x, y) in self.knowns:
+                print ("self.knowns(x, y):", self.knowns[(x, y)])
             f1 = 0
             f2 = 0
+
+            # filling in the left edge of (x, y)
+            print ("left edge")
             if (x - 1, y) in drone:
                 if drone[x, y][constants.LEFT] == -1 and drone [x - 1, y][constants.RIGHT] == -1:
-                    try: 
-                        f1 = self.knowns[(x, y)][constants.LEFT]
-                    except:
+                    if ((x + self.cur_x, y + self.cur_y) in self.knowns) and (constants.LEFT in self.knowns[(x + self.cur_x, y + self.cur_y)]):
+                        f1 = self.knowns[(x + self.cur_x, y + self.cur_y)][constants.LEFT]
+                    else:
                         f1 = self.rng.integers(low= 1, high=self.maximum_door_frequency, endpoint=True)
-                    try: 
-                        f2 = self.knowns[(x - 1, y)][constants.RIGHT]
-                    except:
+                    if ((x - 1 + self.cur_x, y + self.cur_y) in self.knowns) and (constants.RIGHT in self.knowns[(x - 1 + self.cur_x, y + self.cur_y)]):
+                        f2 = self.knowns[(x - 1 + self.cur_x, y + self.cur_y)][constants.RIGHT]
+                    else:
                         f2 = self.rng.integers(low= 1, high=self.maximum_door_frequency, endpoint=True)
                     f = self.lcm(f1, f2)
                     drone[x, y][constants.LEFT] = f
                     drone [x - 1, y][constants.RIGHT] = f
             else:
                 if drone[x, y][constants.LEFT] == -1: 
-                    try: 
-                        drone[x, y][constants.LEFT] = self.knowns[(x, y)][constants.LEFT]
-                    except:
+                    if ((x + self.cur_x, y + self.cur_y) in self.knowns) and (constants.LEFT in self.knowns[(x + self.cur_x, y + self.cur_y)]): 
+                        drone[x, y][constants.LEFT] = self.knowns[(x + self.cur_x, y + self.cur_y)][constants.LEFT]
+                    else:
                         drone[x, y][constants.LEFT] = self.rng.integers(low= 1, high=self.maximum_door_frequency, endpoint=True)
 
+            # filling in the up edge of (x, y)
+            print ("up edge")
             if (x, y - 1) in drone:
                 if drone[x, y][constants.UP] == -1 and drone [x, y - 1][constants.DOWN] == -1:
-                    try: 
+                    if ((x + self.cur_x, y + self.cur_y) in self.knowns) and (constants.UP in self.knowns[(x + self.cur_x, y + self.cur_y)]): 
                         f1 = self.knowns[(x, y)][constants.UP]
-                    except:
+                    else:
                         f1 = self.rng.integers(low= 1, high=self.maximum_door_frequency, endpoint=True)
-                    try: 
+                    if ((x + self.cur_x, y - 1 + self.cur_y) in self.knowns) and (constants.DOWN in self.knowns[(x + self.cur_x, y - 1 + self.cur_y)]):  
                         f2 = self.knowns[(x, y - 1)][constants.DOWN]
-                    except:
+                    else:
                         f2 = self.rng.integers(low= 1, high=self.maximum_door_frequency, endpoint=True)
                     f = self.lcm(f1, f2)
                     drone[x, y][constants.UP] = f
                     drone [x, y - 1][constants.DOWN] = f
             else:
                 if drone[x, y][constants.UP] == -1: 
-                    try: 
+                    print ("first ")
+                    if ((x + self.cur_x, y + self.cur_y) in self.knowns) and (constants.UP in self.knowns[(x + self.cur_x, y + self.cur_y)]): 
                         drone[x, y][constants.UP] = self.knowns[(x, y)][constants.UP]
-                    except:
+                    else:
                         drone[x, y][constants.UP] = self.rng.integers(low= 1, high=self.maximum_door_frequency, endpoint=True)
 
+            print ("right edge")
             if (x + 1, y) in drone:
                 if drone[x, y][constants.RIGHT] == -1 and drone [x + 1, y][constants.LEFT] == -1:
-                    try: 
+                    if ((x + self.cur_x, y + self.cur_y) in self.knowns) and (constants.RIGHT in self.knowns[(x + self.cur_x, y + self.cur_y)]):
                         f1 = self.knowns[(x, y)][constants.RIGHT]
-                    except:
+                    else:
                         f1 = self.rng.integers(low= 1, high=self.maximum_door_frequency, endpoint=True)
-                    try: 
+                    if ((x + 1 + self.cur_x, y + self.cur_y) in self.knowns) and (constants.LEFT in self.knowns[(x + 1 + self.cur_x, y + self.cur_y)]): 
                         f2 = self.knowns[(x + 1, y)][constants.LEFT]
-                    except:
+                    else:
                         f2 = self.rng.integers(low= 1, high=self.maximum_door_frequency, endpoint=True)
                     f = self.lcm(f1, f2)
                     drone[x, y][constants.RIGHT] = f
                     drone [x + 1, y][constants.LEFT] = f
             else:
                 if drone[x, y][constants.RIGHT] == -1: 
-                    try: 
+                    if ((x + self.cur_x, y + self.cur_y) in self.knowns) and (constants.RIGHT in self.knowns[(x + self.cur_x, y + self.cur_y)]): 
                         drone[x, y][constants.RIGHT] = self.knowns[(x, y)][constants.RIGHT]
-                    except:
+                    else:
                         drone[x, y][constants.RIGHT] = self.rng.integers(low= 1, high=self.maximum_door_frequency, endpoint=True)
 
+            print ("down edge")
             if (x, y + 1) in drone: 
                 if drone[x, y][constants.DOWN] == -1 and drone [x, y + 1][constants.UP] == -1:
-                    try: 
+                    if ((x + self.cur_x, y + self.cur_y) in self.knowns) and (constants.DOWN in self.knowns[(x + self.cur_x, y + self.cur_y)]): 
                         f1 = self.knowns[(x, y)][constants.DOWN]
-                    except:
+                    else:
                         f1 = self.rng.integers(low= 1, high=self.maximum_door_frequency, endpoint=True)
-                    try: 
+                    if ((x + self.cur_x, y + 1 + self.cur_y) in self.knowns) and (constants.UP in self.knowns[(x + self.cur_x, y + 1 + self.cur_y)]): 
                         f2 = self.knowns[(x, y + 1)][constants.UP]
-                    except:
+                    else:
                         f2 = self.rng.integers(low= 1, high=self.maximum_door_frequency, endpoint=True)
                     f = self.lcm(f1, f2)
                     drone[x, y][constants.DOWN] = f
                     drone [x, y + 1][constants.UP] = f
             else:
                 if drone[x, y][constants.DOWN] == -1: 
-                    try: 
+                    if ((x + self.cur_x, y + self.cur_y) in self.knowns) and (constants.DOWN in self.knowns[(x + self.cur_x, y + self.cur_y)]): 
                         drone[x, y][constants.DOWN] = self.knowns[(x, y)][constants.DOWN]
-                    except:
+                    else:
                         drone[x, y][constants.DOWN] = self.rng.integers(low= 1, high=self.maximum_door_frequency, endpoint=True)
-    
         return drone
 
     
